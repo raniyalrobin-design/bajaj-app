@@ -1,0 +1,9 @@
+venv/
+__pycache__/
+*.pyc
+*.tar
+.env
+*.swp
+*.swo
+app.py_backup
+app.py.before-sqli-lab
