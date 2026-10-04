@@ -3,6 +3,7 @@ import psycopg2
 import os
 app = Flask(__name__)
 
+# CI PR test
 
 def get_db_connection():
     return psycopg2.connect(
