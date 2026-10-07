@@ -48,3 +48,21 @@ jobs:
           tags: |
             ${{ env.IMAGE }}:${{ github.sha }}
             ${{ env.IMAGE }}:latest
+
+  deploy:
+    needs: build-push
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Azure VM
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.AZURE_VM_HOST }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          key: ${{ secrets.AZURE_VM_SSH_KEY }}
+          script: |
+            sudo kubectl set image deployment/bajaj-deployment \
+              bajaj-app=ghcr.io/raniyalrobin-design/bajaj-app:${{ github.sha }}
+
+            sudo kubectl rollout status deployment/bajaj-deployment --timeout=180s
